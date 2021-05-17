@@ -15,7 +15,7 @@ const BoundingBox = styled.div<{ aspectRatio: number }>`
   position: relative;
   width: 100%;
   padding-top: ${props => 100 / props.aspectRatio}%;
-  background-color: rgba(0, 139, 139, 0.3);
+  background-color: rgba(255, 0, 0, 0.3);
   overflow: hidden;
 `;
 
@@ -35,7 +35,7 @@ const Circle = styled.div<{ position: Point }>`
   height: 20px;
   width: 20px;
   border-radius: 20px;
-  background-color: cyan;
+  background-color: orangered;
   border: 1px solid white;
   transition: transform 0.2s;
   transform: translate(-10px, -10px);
