@@ -47,6 +47,7 @@ const Circle = styled.div<{ position: Point }>`
 `;
 
 type CustomPlayerOverlayProps = {
+  time: number;
   height: number;
   width: number;
 };
@@ -56,7 +57,7 @@ type Point = {
   y: number;
 };
 
-export function CustomPlayerOverlay({ height, width }: CustomPlayerOverlayProps) {
+export function CustomPlayerOverlay({ time, height, width }: CustomPlayerOverlayProps) {
   const [points, setPoints] = useState<Point[]>([]);
 
   useEffect(() => {
@@ -68,6 +69,8 @@ export function CustomPlayerOverlay({ height, width }: CustomPlayerOverlayProps)
       );
     fetchPoints();
   }, []);
+
+  console.log(`Paused at ${time}s`);
 
   return (
     <Mask>

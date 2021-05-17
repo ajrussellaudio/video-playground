@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { CustomPlayerOverlay } from './CustomPlayerOverlay';
 
@@ -15,27 +15,34 @@ const Video = styled.video`
   height: 100%;
 `;
 
-export function CustomPlayer() {
-  const videoNode = useRef<HTMLVideoElement>(null);
-  const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
-  const [isPaused, setIsPaused] = useState(false);
+type PlayingState = { isPaused: false } | { isPaused: true; time: number };
 
-  useEffect(() => {
-    if (videoNode.current) {
-      const { videoHeight, videoWidth } = videoNode.current;
+export function CustomPlayer() {
+  const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
+  const [state, setState] = useState<PlayingState>({ isPaused: false });
+
+  // see here:
+  // https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
+  const videoRef = useCallback((videoNode: HTMLVideoElement) => {
+    if (videoNode !== null) {
+      const { videoHeight, videoWidth } = videoNode;
       setDimensions({ width: videoWidth, height: videoHeight });
 
-      videoNode.current.addEventListener('pause', () => setIsPaused(true));
-      videoNode.current.addEventListener('play', () => setIsPaused(false));
+      videoNode.addEventListener('pause', function () {
+        setState({ isPaused: true, time: this.currentTime });
+      });
+      videoNode.addEventListener('play', function () {
+        setState({ isPaused: false });
+      });
     }
   }, []);
 
   return (
     <Container>
-      <Video ref={videoNode} controls>
+      <Video ref={videoRef} controls>
         <source src="//vjs.zencdn.net/v/oceans.mp4" type="video/mp4" />
       </Video>
-      {isPaused && <CustomPlayerOverlay {...dimensions} />}
+      {state.isPaused && <CustomPlayerOverlay time={state.time} {...dimensions} />}
     </Container>
   );
 }
